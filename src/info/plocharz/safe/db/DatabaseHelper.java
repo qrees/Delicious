@@ -9,8 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -23,11 +21,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     // name of the database file for your application -- change to something appropriate for your app
     private static final String DATABASE_NAME = "tasks.db";
     // any time you make changes to your database objects, you may have to increase the database version
-    private static final int DATABASE_VERSION = 1;
-
-    // the DAO object we use to access the SimpleData table
-    private Dao<Task, String> simpleDao = null;
-    private RuntimeExceptionDao<Task, String> simpleRuntimeDao = null;
+    private static final int DATABASE_VERSION = 3;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
@@ -46,12 +40,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
             throw new RuntimeException(e);
         }
-
-        // here we try inserting data in the on-create as a test
-        RuntimeExceptionDao<Task, String> dao = getSimpleDataDao();
-        // create some entries in the onCreate
-        Task simple = new Task("test");
-        dao.create(simple);
     }
 
     /**
@@ -69,36 +57,5 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             Log.e(DatabaseHelper.class.getName(), "Can't drop databases", e);
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Returns the Database Access Object (DAO) for our SimpleData class. It will create it or just give the cached
-     * value.
-     */
-    public Dao<Task, String> getDao() throws SQLException {
-        if (simpleDao == null) {
-            simpleDao = getDao(Task.class);
-        }
-        return simpleDao;
-    }
-
-    public RuntimeExceptionDao getSimpleDataDao(java.lang.Class clazz) {
-        return getRuntimeExceptionDao(clazz);
-    }
-    
-    public RuntimeExceptionDao<Task, String> getSimpleDataDao() {
-        if (simpleRuntimeDao == null) {
-            simpleRuntimeDao = getRuntimeExceptionDao(Task.class);
-        }
-        return simpleRuntimeDao;
-    }
-
-    /**
-     * Close the database connections and clear any cached DAOs.
-     */
-    @Override
-    public void close() {
-        super.close();
-        simpleRuntimeDao = null;
     }
 }

@@ -6,5 +6,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="start">Start</string>
     <string name="title_activity_browser">Browser</string>
+    <string name="menu_add">Add</string>
+    <string name="title_activity_add_task_dialog">AddTaskDialog</string>
 
 </resources>

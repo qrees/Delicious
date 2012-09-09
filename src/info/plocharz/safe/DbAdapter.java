@@ -1,13 +1,12 @@
 package info.plocharz.safe;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import info.plocharz.safe.db.BaseModel;
 import info.plocharz.safe.db.DatabaseHelper;
-import info.plocharz.safe.db.Task;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 
 public class DbAdapter extends BaseAdapter {
     
+    protected Map<Integer, BaseModel> object_map = new HashMap<Integer, BaseModel>();
     private LayoutInflater mInflater;
     Context context;
 
@@ -31,10 +31,15 @@ public class DbAdapter extends BaseAdapter {
     public DbAdapter(Context context, Class klasa) {
         this.context = context;
         DatabaseHelper helper = this.getHelper();
-        dao = helper.getSimpleDataDao(klasa);
+        dao = (RuntimeExceptionDao<BaseModel, String>) helper.getRuntimeExceptionDao(klasa);
         mInflater = LayoutInflater.from(context); 
     }
-
+    
+    public void add(BaseModel item) {
+        dao.create(item);
+        this.notifyDataSetChanged();
+    }
+    
     private DatabaseHelper databaseHelper = null;
     private DatabaseHelper getHelper() {
         if (databaseHelper == null) {
@@ -51,20 +56,24 @@ public class DbAdapter extends BaseAdapter {
     public Object getItem(int arg0) {
         QueryBuilder<BaseModel, String> queryBuilder = dao.queryBuilder();
         try {
-            queryBuilder.offset((long)arg0).limit((long)1);
-            PreparedQuery<BaseModel> preparedQuery = queryBuilder.prepare();
-            List<BaseModel> accountList = dao.query(preparedQuery);
-            if(accountList.size() == 0)
-                return null;
-            return accountList.get(0);
+            if(!object_map.containsKey(arg0)) {
+                queryBuilder.offset((long)arg0).limit((long)1);
+                PreparedQuery<BaseModel> preparedQuery = queryBuilder.prepare();
+                List<BaseModel> accountList = dao.query(preparedQuery);
+                if(accountList.size() == 0)
+                    return null;
+                BaseModel item = accountList.get(0);
+                object_map.put(arg0, item);
+            };
+            return object_map.get(arg0);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public long getItemId(int pozition) {
-        return pozition;
+    public long getItemId(int position) {
+        return position;
     }
     
     public View getView(int position, View convertView, ViewGroup parent) { 
@@ -74,7 +83,7 @@ public class DbAdapter extends BaseAdapter {
                 ((convertView == null)?"null":"being recycled")); 
 
         if (convertView == null) { 
-            convertView = mInflater.inflate(android.R.layout.simple_list_item_1, null); 
+            convertView = mInflater.inflate(android.R.layout.simple_list_item_checked, null); 
         }
         
         BaseModel item = (BaseModel) this.getItem(position);
