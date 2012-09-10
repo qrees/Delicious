@@ -7,6 +7,7 @@ import java.util.Map;
 
 import info.plocharz.safe.db.BaseModel;
 import info.plocharz.safe.db.DatabaseHelper;
+import info.plocharz.safe.db.Task;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
@@ -48,21 +49,31 @@ public class DbAdapter extends BaseAdapter {
         }
         return databaseHelper;
     }
+
+    protected QueryBuilder<BaseModel, String> query() throws SQLException {
+        QueryBuilder<BaseModel, String> builder = dao.queryBuilder();
+        return builder;
+    }
     
     public int getCount() {
-        return (int) dao.countOf();
+        try {
+            return (int) dao.countOf(this.query().setCountOf(true).prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public Object getItem(int arg0) {
         QueryBuilder<BaseModel, String> queryBuilder = dao.queryBuilder();
         try {
             if(!object_map.containsKey(arg0)) {
+                queryBuilder = this.query();
                 queryBuilder.offset((long)arg0).limit((long)1);
-                PreparedQuery<BaseModel> preparedQuery = queryBuilder.prepare();
-                List<BaseModel> accountList = dao.query(preparedQuery);
-                if(accountList.size() == 0)
+                List<BaseModel> list = dao.query(queryBuilder.prepare());
+                if(list.size() == 0)
                     return null;
-                BaseModel item = accountList.get(0);
+                BaseModel item = list.get(0);
                 object_map.put(arg0, item);
             };
             return object_map.get(arg0);

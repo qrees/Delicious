@@ -1,7 +1,14 @@
 package info.plocharz.safe;
 
-import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import java.sql.SQLException;
 
+import com.j256.ormlite.dao.Dao.CreateOrUpdateStatus;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.PreparedUpdate;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
+
+import info.plocharz.safe.db.BaseModel;
 import info.plocharz.safe.db.Task;
 import android.content.Context;
 import android.view.View;
@@ -22,6 +29,14 @@ public class TaskAdapter extends DbAdapter {
         this.notifyDataSetChanged();
     }
     
+    @Override
+    protected QueryBuilder<BaseModel, String> query() throws SQLException {
+        QueryBuilder<BaseModel, String> builder = dao.queryBuilder();
+        builder.where().eq(Task.STATE_FIELD_NAME, Task.State.ACTIVE).
+                   or().eq(Task.STATE_FIELD_NAME, Task.State.COMPLETE);
+        return builder;
+    }
+    
     public void complete(int position){
         Task task = (Task) this.getItem(position);
         task.complete();
@@ -37,6 +52,19 @@ public class TaskAdapter extends DbAdapter {
         Log.i("Refreshing task: %s %s", task.verboseName(), task.getState().toString());
         view.setChecked(!task.getState().equals(Task.State.ACTIVE));
         return view;
+    }
+
+    public void clearCompleted() {
+        dao.queryForEq("state", Task.State.COMPLETE);
+        UpdateBuilder<BaseModel, String> builder = dao.updateBuilder();
+        try {
+            builder.updateColumnValue(Task.STATE_FIELD_NAME, Task.State.HIDDEN).where().eq(Task.STATE_FIELD_NAME, Task.State.COMPLETE);
+            dao.update(builder.prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        this.object_map.clear();
+        this.notifyDataSetChanged();
     }
 
 }

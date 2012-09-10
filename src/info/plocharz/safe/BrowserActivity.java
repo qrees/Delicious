@@ -50,11 +50,17 @@ public class BrowserActivity extends Activity implements OnItemClickListener {
             case R.id.menu_add:
                 showAddDialog();
                 return true;
+            case R.id.menu_clear:
+                clearCompleted();
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void clearCompleted() {
+        adapter.clearCompleted();
+    }
+    
     private void showAddDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 

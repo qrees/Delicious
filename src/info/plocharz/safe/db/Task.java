@@ -6,6 +6,7 @@ import java.util.UUID;;
 
 @DatabaseTable(tableName = "task")
 public class Task extends BaseModel {
+    public static final String STATE_FIELD_NAME = "state";
     
     public enum State {
         ACTIVE, COMPLETE, HIDDEN, DELETED
@@ -17,7 +18,7 @@ public class Task extends BaseModel {
     @DatabaseField
     private String text;
     
-    @DatabaseField
+    @DatabaseField(columnName = STATE_FIELD_NAME)
     private State state;
     
     private void init() {
