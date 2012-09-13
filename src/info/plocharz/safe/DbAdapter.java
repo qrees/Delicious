@@ -26,14 +26,16 @@ public class DbAdapter extends BaseAdapter {
     protected Map<Integer, BaseModel> object_map = new HashMap<Integer, BaseModel>();
     private LayoutInflater mInflater;
     Context context;
+    protected int item_resource;
 
     RuntimeExceptionDao<BaseModel, String> dao = null;
     
-    public DbAdapter(Context context, Class klasa) {
+    public DbAdapter(Context context, Class klasa, int item_resource) {
         this.context = context;
         DatabaseHelper helper = this.getHelper();
         dao = (RuntimeExceptionDao<BaseModel, String>) helper.getRuntimeExceptionDao(klasa);
-        mInflater = LayoutInflater.from(context); 
+        mInflater = LayoutInflater.from(context);
+        this.item_resource = item_resource;
     }
     
     public void add(BaseModel item) {
@@ -94,11 +96,11 @@ public class DbAdapter extends BaseAdapter {
                 ((convertView == null)?"null":"being recycled")); 
 
         if (convertView == null) { 
-            convertView = mInflater.inflate(android.R.layout.simple_list_item_checked, null); 
+            convertView = mInflater.inflate(this.item_resource, null); 
         }
         
         BaseModel item = (BaseModel) this.getItem(position);
-        TextView text = (TextView) convertView.findViewById(android.R.id.text1);
+        TextView text = (TextView) convertView.findViewById(R.id.text1);
         text.setText(item.verboseName());
         return convertView; 
     } 

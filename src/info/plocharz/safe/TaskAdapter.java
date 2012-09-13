@@ -13,12 +13,16 @@ import info.plocharz.safe.db.Task;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
-public class TaskAdapter extends DbAdapter {
-
+public class TaskAdapter extends DbAdapter implements OnCheckedChangeListener {
+    
+    
     public TaskAdapter(Context context, Class klasa) {
-        super(context, klasa);
+        super(context, klasa, R.layout.task_item);
     }
 
     public void toggle(int position){
@@ -46,11 +50,15 @@ public class TaskAdapter extends DbAdapter {
     }
     
     public View getView(int position, View convertView, ViewGroup parent) {
-        CheckedTextView view = (CheckedTextView) super.getView(position, convertView, parent);
+        ViewGroup view = (ViewGroup) super.getView(position, convertView, parent);
+        view.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
         Task task = (Task) this.getItem(position);
         task.getState();
         Log.i("Refreshing task: %s %s", task.verboseName(), task.getState().toString());
-        view.setChecked(!task.getState().equals(Task.State.ACTIVE));
+        CheckBox check = (CheckBox) view.findViewById(R.id.checkbox);
+        check.setChecked(!task.getState().equals(Task.State.ACTIVE));
+        check.setOnCheckedChangeListener(this);
+        check.setTag(position);
         return view;
     }
 
@@ -65,6 +73,11 @@ public class TaskAdapter extends DbAdapter {
         }
         this.object_map.clear();
         this.notifyDataSetChanged();
+    }
+
+    public void onCheckedChanged(CompoundButton check, boolean arg1) {
+        int position = (Integer) check.getTag();
+        this.toggle(position);
     }
 
 }
