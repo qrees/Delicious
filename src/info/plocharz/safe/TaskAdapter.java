@@ -51,7 +51,7 @@ public class TaskAdapter extends DbAdapter implements OnCheckedChangeListener {
     
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewGroup view = (ViewGroup) super.getView(position, convertView, parent);
-        view.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        view.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         Task task = (Task) this.getItem(position);
         task.getState();
         Log.i("Refreshing task: %s %s", task.verboseName(), task.getState().toString());
@@ -79,5 +79,12 @@ public class TaskAdapter extends DbAdapter implements OnCheckedChangeListener {
         int position = (Integer) check.getTag();
         this.toggle(position);
     }
-
+    
+    public void setTaskText(int position, String text) {
+        Task task = (Task) this.getItem(position);
+        task.setText(text);
+        dao.createOrUpdate(task);
+        this.object_map.remove(position);
+        this.notifyDataSetChanged();
+    }
 }

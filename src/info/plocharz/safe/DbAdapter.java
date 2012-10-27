@@ -7,11 +7,9 @@ import java.util.Map;
 
 import info.plocharz.safe.db.BaseModel;
 import info.plocharz.safe.db.DatabaseHelper;
-import info.plocharz.safe.db.Task;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import android.content.Context;
@@ -96,7 +94,7 @@ public class DbAdapter extends BaseAdapter {
                 ((convertView == null)?"null":"being recycled")); 
 
         if (convertView == null) { 
-            convertView = mInflater.inflate(this.item_resource, null); 
+            convertView = mInflater.inflate(this.item_resource, null);
         }
         
         BaseModel item = (BaseModel) this.getItem(position);

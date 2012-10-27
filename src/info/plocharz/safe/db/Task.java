@@ -45,6 +45,10 @@ public class Task extends BaseModel {
         this.state = State.COMPLETE;
     }
     
+    public void setText(String text) {
+        this.text = text;
+    }
+    
     public void toggle() {
         if(this.state.equals(State.ACTIVE)){
             this.state = State.COMPLETE;
@@ -56,7 +60,7 @@ public class Task extends BaseModel {
     public State getState() {
         return this.state;
     }
-
+    
     public String getUuid() {
         return uuid;
     }

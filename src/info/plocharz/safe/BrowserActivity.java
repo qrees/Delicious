@@ -1,17 +1,13 @@
 package info.plocharz.safe;
 
-import info.plocharz.safe.db.DatabaseHelper;
 import info.plocharz.safe.db.Task;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,14 +77,43 @@ public class BrowserActivity extends Activity implements OnItemClickListener {
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int whichButton) {
-            // Canceled.
+              
           }
         });
 
         alert.show();
     }
 
+
+    private void showEditDialog(final int position) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        Task task = (Task) this.adapter.getItem(position);
+        
+        alert.setTitle("Eddit Task");
+        alert.setMessage("Enter task contents");
+
+        // Set an EditText view to get user input 
+        final EditText input = new EditText(this);
+        input.setText(task.verboseName());
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString();
+                adapter.setTaskText(position, value);
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int whichButton) {
+              
+          }
+        });
+        alert.show();
+    }
+
+    
     public void onItemClick(AdapterView<?> view, View target, int position, long id) {
-        adapter.toggle(position);
+        this.showEditDialog(position);
     }
 }

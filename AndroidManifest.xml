@@ -28,6 +28,11 @@
             android:name=".AddTaskDialog"
             android:label="@string/title_activity_add_task_dialog" >
         </activity>
+        <activity
+            android:name=".HttpActivity"
+            android:label="@string/title_activity_http" >
+        </activity>
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 </manifest>
