@@ -2,13 +2,14 @@ package info.plocharz.safe.db;
 
 import info.plocharz.safe.R;
 
+import java.io.File;
 import java.sql.SQLException;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabase;
 import android.util.Log;
 
-import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+import info.plocharz.safe.db.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -19,12 +20,17 @@ import com.j256.ormlite.table.TableUtils;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     // name of the database file for your application -- change to something appropriate for your app
-    private static final String DATABASE_NAME = "tasks.db";
+    private static final String DATABASE_NAME = "tasks1.db";
     // any time you make changes to your database objects, you may have to increase the database version
     private static final int DATABASE_VERSION = 3;
-
+    
+    public static String getPath(Context context){
+        File file = new File(context.getExternalFilesDir(null), DATABASE_NAME);
+        return file.getPath();
+    }
+    
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
+        super(context, DatabaseHelper.getPath(context), null, DATABASE_VERSION, R.raw.ormlite_config, "test_password");
     }
 
     /**

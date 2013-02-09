@@ -1,5 +1,5 @@
 #
-# generated on 2012/09/09 07:34:30
+# generated on 2013/02/02 04:49:36
 #
 # --table-start--
 dataClass=info.plocharz.safe.db.Task
@@ -14,6 +14,7 @@ fieldName=text
 # --field-end--
 # --field-start--
 fieldName=state
+columnName=state
 # --field-end--
 # --table-fields-end--
 # --table-end--

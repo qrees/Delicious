@@ -1,5 +1,6 @@
 package info.plocharz.safe;
 
+import net.sqlcipher.database.SQLiteDatabase;
 import info.plocharz.safe.db.Task;
 
 
@@ -22,6 +23,7 @@ public class BrowserActivity extends Activity implements OnItemClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SQLiteDatabase.loadLibs(this);
         setContentView(R.layout.activity_browser);
         
         Intent intent = getIntent();

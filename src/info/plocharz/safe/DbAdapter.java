@@ -8,7 +8,8 @@ import java.util.Map;
 import info.plocharz.safe.db.BaseModel;
 import info.plocharz.safe.db.DatabaseHelper;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
+import info.plocharz.safe.db.OpenHelperManager;
+//import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
